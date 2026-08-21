@@ -1,5 +1,14 @@
 import { getPool } from '../config/database.js';
 import { logger } from '../config/logger.js';
+import { body, param } from 'express-validator';
+
+export const createRSVPValidators = [
+  param('id')
+    .isInt({ min: 1 }).withMessage('Event ID must be a valid integer'),
+  body('status')
+    .optional()
+    .isIn(['going', 'interested']).withMessage('Status must be either "going" or "interested"'),
+];
 
 export const createRSVP = async (req, res) => {
   try {
