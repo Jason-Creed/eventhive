@@ -1,6 +1,7 @@
 import { getPool } from '../config/database.js';
 import { logger } from '../config/logger.js';
 import { uploadToS3, deleteFromS3 } from '../utils/s3.js';
+import { body } from 'express-validator';
 
 const buildCountParams = (category, search, startDate, endDate) => {
   const params = [];
@@ -225,3 +226,56 @@ export const getMyEvents = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch events', error: error.message });
   }
 };
+
+
+export const createEventValidators = [
+  body('title')
+    .trim()
+    .notEmpty().withMessage('Title is required')
+    .isLength({ max: 200 }).withMessage('Title must be under 200 characters'),
+  body('description')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 5000 }).withMessage('Description must be under 5000 characters'),
+  body('category_id')
+    .notEmpty().withMessage('Category is required')
+    .isInt({ min: 1 }).withMessage('Category ID must be a valid integer'),
+  body('location')
+    .trim()
+    .notEmpty().withMessage('Location is required')
+    .isLength({ max: 255 }).withMessage('Location must be under 255 characters'),
+  body('event_date')
+    .notEmpty().withMessage('Event date is required')
+    .isISO8601().withMessage('Event date must be a valid date')
+    .custom((value) => new Date(value) > new Date()).withMessage('Event date must be in the future'),
+  body('capacity')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 0 }).withMessage('Capacity must be a non-negative integer'),
+];
+
+export const updateEventValidators = [
+  body('title')
+    .optional()
+    .trim()
+    .notEmpty().withMessage('Title cannot be empty')
+    .isLength({ max: 200 }).withMessage('Title must be under 200 characters'),
+  body('description')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 5000 }).withMessage('Description must be under 5000 characters'),
+  body('category_id')
+    .optional()
+    .isInt({ min: 1 }).withMessage('Category ID must be a valid integer'),
+  body('location')
+    .optional()
+    .trim()
+    .notEmpty().withMessage('Location cannot be empty')
+    .isLength({ max: 255 }).withMessage('Location must be under 255 characters'),
+  body('event_date')
+    .optional()
+    .isISO8601().withMessage('Event date must be a valid date'),
+  body('capacity')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 0 }).withMessage('Capacity must be a non-negative integer'),
+  body('status')
+    .optional()
+    .isIn(['active', 'cancelled', 'completed']).withMessage('Invalid status value'),
+];

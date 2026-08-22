@@ -5,7 +5,9 @@ import {
   createEvent,
   updateEvent,
   deleteEvent,
-  getMyEvents
+  getMyEvents,
+  createEventValidators,
+  updateEventValidators
 } from '../controllers/eventController.js';
 import { authenticate, authorize, isEventOwner } from '../middleware/auth.js';
 import { handleValidationErrors, asyncHandler } from '../middleware/error.js';
@@ -34,8 +36,8 @@ const upload = multer({
 router.get('/', asyncHandler(getEvents));
 router.get('/my-events', authenticate, authorize('organizer', 'admin'), asyncHandler(getMyEvents));
 router.get('/:id', asyncHandler(getEvent));
-router.post('/', authenticate, authorize('organizer', 'admin'), upload.single('banner_image'), handleValidationErrors, asyncHandler(createEvent));
-router.put('/:id', authenticate, isEventOwner, upload.single('banner_image'), handleValidationErrors, asyncHandler(updateEvent));
+router.post('/', authenticate, authorize('organizer', 'admin'), upload.single('banner_image'), createEventValidators, handleValidationErrors, asyncHandler(createEvent));
+router.put('/:id', authenticate, isEventOwner, upload.single('banner_image'), updateEventValidators, handleValidationErrors, asyncHandler(updateEvent));
 router.delete('/:id', authenticate, isEventOwner, asyncHandler(deleteEvent));
 
 export default router;
