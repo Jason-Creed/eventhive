@@ -10,6 +10,7 @@ import authRoutes from './routes/authRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import rsvpRoutes from './routes/rsvpRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import { errorHandler } from './middleware/error.js';
 import { testConnection } from './config/database.js';
 
@@ -64,7 +65,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/events', rsvpRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes);
-
+app.use('/api/categories', categoryRoutes);
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
