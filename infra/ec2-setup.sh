@@ -45,7 +45,7 @@ mkdir -p /opt/eventhive/backend/logs
 
 # Create PM2 ecosystem file
 echo "[8/8] Configuring PM2..."
-cat > /opt/eventhive/backend/ecosystem.config.js << 'EOF'
+cat > /opt/eventhive/backend/ecosystem.config.cjs << 'EOF'
 module.exports = {
   apps: [
     {
@@ -71,7 +71,7 @@ EOF
 
 # Start app with PM2
 cd /opt/eventhive/backend
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
 
