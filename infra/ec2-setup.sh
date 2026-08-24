@@ -32,9 +32,7 @@ echo "[6/8] Cloning/pulling repository..."
 if [ -d ".git" ]; then
     git pull origin main
 else
-    echo "Please manually clone the repository to /opt/eventhive"
-    echo "git clone <repo-url> /opt/eventhive"
-    exit 1
+    git clone https://github.com/Jason-Creed/eventhive.git /opt/eventhive
 fi
 
 # Install dependencies
