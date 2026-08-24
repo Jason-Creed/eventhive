@@ -9,13 +9,13 @@ echo "=== EventHive Deploy Script ==="
 echo "This script redeploys the latest EventHive backend code"
 echo ""
 
-# Ensure Node.js is installed (installs if missing, otherwise no-op)
+# Ensure Node.cjs is installed (installs if missing, otherwise no-op)
 if ! command -v node &> /dev/null; then
-  echo "[1/4] Node.js not found. Installing Node.js 20..."
+  echo "[1/4] Node.cjs not found. Installing Node.cjs 20..."
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
   sudo apt install -y nodejs
 else
-  echo "[1/4] Node.js already installed ($(node -v)). Skipping."
+  echo "[1/4] Node.cjs already installed ($(node -v)). Skipping."
 fi
 
 # Pull latest code
