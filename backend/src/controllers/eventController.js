@@ -1,7 +1,18 @@
 import { getPool } from '../config/database.js';
 import { logger } from '../config/logger.js';
-import { uploadToS3, deleteFromS3 } from '../utils/s3.js';
+import { uploadToS3, deleteFromS3, generatePresignedUrl } from '../utils/s3.js';
 import { body } from 'express-validator';
+
+const withSignedBanner = async (event) => {
+  if (event && event.banner_image_url) {
+    event.banner_image_url = await generatePresignedUrl(event.banner_image_url);
+  }
+  return event;
+};
+
+const withSignedBanners = async (events) => {
+  return Promise.all(events.map(withSignedBanner));
+};
 
 const buildCountParams = (category, search, startDate, endDate) => {
   const params = [];
@@ -60,7 +71,7 @@ export const getEvents = async (req, res) => {
     );
 
     res.json({
-      events,
+      events: await withSignedBanners(events),
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -89,7 +100,7 @@ export const getEvent = async (req, res) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    res.json({ event: events[0] });
+    res.json({ event: await withSignedBanner(events[0]) });
   } catch (error) {
     logger.error('Get event error:', error);
     res.status(500).json({ message: 'Failed to fetch event', error: error.message });
@@ -122,7 +133,7 @@ export const createEvent = async (req, res) => {
     );
 
     logger.info(`Event created: ${title} by user ${req.user.email}`);
-    res.status(201).json({ event: newEvent[0] });
+    res.status(201).json({ event: await withSignedBanner(newEvent[0]) });
   } catch (error) {
     logger.error('Create event error:', error);
     res.status(500).json({ message: 'Failed to create event', error: error.message });
@@ -176,7 +187,7 @@ export const updateEvent = async (req, res) => {
     );
 
     logger.info(`Event updated: ${req.params.id} by user ${req.user.email}`);
-    res.json({ event: updatedEvent[0] });
+    res.json({ event: await withSignedBanner(updatedEvent[0]) });
   } catch (error) {
     logger.error('Update event error:', error);
     res.status(500).json({ message: 'Failed to update event', error: error.message });
@@ -220,7 +231,7 @@ export const getMyEvents = async (req, res) => {
       [req.user.id]
     );
 
-    res.json({ events });
+    res.json({ events: await withSignedBanners(events) });
   } catch (error) {
     logger.error('Get my events error:', error);
     res.status(500).json({ message: 'Failed to fetch events', error: error.message });

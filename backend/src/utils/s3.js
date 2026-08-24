@@ -27,14 +27,12 @@ export const uploadToS3 = async (fileBuffer, fileName, contentType) => {
 
   await s3Client.send(command);
 
-  return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${key}`;
+  return key;
 };
 
-export const deleteFromS3 = async (imageUrl) => {
+export const deleteFromS3 = async (key) => {
+  if (!key) return;
   try {
-    const url = new URL(imageUrl);
-    const key = url.pathname.substring(1);
-
     const command = new DeleteObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key
