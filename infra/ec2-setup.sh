@@ -50,7 +50,7 @@ module.exports = {
   apps: [
     {
       name: 'eventhive-backend',
-      script: './src/app.js',
+      script: './src/app.cjs',
       cwd: '/opt/eventhive/backend',
       instances: 1,
       autorestart: true,
@@ -81,7 +81,7 @@ echo "Next steps:"
 echo "1. Configure .env file in /opt/eventhive/backend with your values"
 echo "2. Run migrations: npm run migrate"
 echo "3. Run seeds: npm run seed"
-echo "4. Configure PM2: pm2 start ecosystem.config.js"
+echo "4. Configure PM2: pm2 start ecosystem.config.cjs"
 echo "5. Check status: pm2 status"
 echo "6. View logs: pm2 logs eventhive-backend"
 echo ""
