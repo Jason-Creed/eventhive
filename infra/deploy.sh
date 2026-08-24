@@ -39,7 +39,7 @@ if pm2 describe "$PM2_APP_NAME" > /dev/null 2>&1; then
   pm2 restart "$PM2_APP_NAME"
 else
   echo "PM2 process '$PM2_APP_NAME' not found, starting fresh via ecosystem.config.js..."
-  pm2 start ecosystem.config.js
+  pm2 start ecosystem.config.cjs
 fi
 pm2 save
 
